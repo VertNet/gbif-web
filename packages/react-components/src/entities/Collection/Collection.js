@@ -3,7 +3,7 @@ import { jsx } from '@emotion/react';
 import React, { useContext, useState, useEffect } from 'react';
 import { MdInfo } from 'react-icons/md'
 import ThemeContext from '../../style/themes/ThemeContext';
-// import * as css from './styles';
+import * as styles from './styles';
 import { Row, Col, Tabs } from "../../components";
 import { useQuery } from '../../dataManagement/api';
 
@@ -31,13 +31,16 @@ export function Collection({
         <Col shrink={false} grow={false}>doi, api, citation, help</Col>
       </Row>
     </div>
-    <div>
-      Header
-      <Row>
-        <Col>Image</Col>
-        <Col>
-          <div>
-            <h1>Title</h1>
+    <div style={{maxWidth: 1000, margin: 'auto'}}>
+      <Row halfGutter={5} gridGutter wrap="nowrap">
+        <Col basis={50} shrink={false} grow={false} >
+          <img style={{width: '100%'}} src="https://api.gbif.org/v1/image/unsafe/500x300/https%3A%2F%2Fcch2.org%2Fimglib%2Fcch2%2FSBBG%2F202102%2FC691AA1B-991D-42F0-817B-B43B1B_1614362897_lg.jpeg" />
+        </Col>
+        <Col basis={50} shrink={true} grow={false}>
+          <div css={styles.header({theme})}>
+            <div>Collection</div>
+            <h1>Hacettepe University Biodiversity Advanced Research Center Herbarium</h1>
+            <div></div>
             <div>
               about intro
             </div>

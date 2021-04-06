@@ -14,10 +14,14 @@ const border = (width, color, dir, isActive) => ({
   [camelCase(`border-${opposite[dir]}`)]: `${width}px solid transparent`,
 });
 
-export const tab = ({ theme, direction = 'bottom', isActive }) => css`
+export const tab = ({ theme, vertical, direction = 'bottom', isActive }) => css`
   ${border(3, theme.primary500, direction, isActive)}
-  padding: 10px 10px;
+  padding: ${vertical ? '8px 0' : '0 8px'};
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex: 0 1 auto;
+  ${vertical ? 'width' : 'height'}: 100%;
   cursor: pointer;
   &:hover, &:focus {
     outline: none;
@@ -35,6 +39,17 @@ export const tabList = ({ theme, vertical }) => css`
   display: flex;
   flex-direction: ${vertical ? 'column' : 'row'};
   flex-wrap: nowrap;
+  align-items: center;
+  ${vertical ? 'width' : 'height'}: 100%;
+  /* overflow: hidden; */
+  position: relative;
+`;
+
+export const more = (props) => css`
+  /* position: absolute; */
+  /* right: 0; */
+  min-width: 3rem;
+  ${tab(props)};
 `;
 
 export const tabSeperator = ({ theme, vertical }) => css`

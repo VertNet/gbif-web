@@ -10,7 +10,9 @@ import { keyCodes } from '../../utils/util';
 import { MdChevronRight, MdChevronLeft, MdClose } from "react-icons/md";
 import { GbifLogoIcon } from '../../components/Icons/Icons';
 
-export function DetailsDrawer({ dialog, nextItem, previousItem, href, children, ...props }) {
+import { DataHeader2 } from '../DataHeader/DataHeader';
+
+export function DetailsDrawer({ dialog, nextItem, previousItem, href, children, style={}, ...props }) {
   const theme = useContext(ThemeContext);
   useEffect(() => {
     function handleKeypress(e) {
@@ -33,8 +35,8 @@ export function DetailsDrawer({ dialog, nextItem, previousItem, href, children, 
         <Dialog {...dialog} aria-label="Details" css={css.drawer()}>
           {dialog.visible &&
             <Root style={{height: '100%', display: 'flex', flexDirection: 'column'}}>
-              
-              <div style={{flex: '1 1 auto', overflow: 'auto'}}>
+              <DataHeader2 style={{borderTop: '1px solid #eee', borderBottom: '1px solid #eee'}}></DataHeader2>
+              <div style={{flex: '1 1 auto', overflow: 'auto', ...style}} {...props}>
                 {children}
               </div>
               {(previousItem || nextItem) && <div css={css.footerBar({theme})}>

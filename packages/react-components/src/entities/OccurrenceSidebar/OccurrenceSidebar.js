@@ -55,7 +55,7 @@ export function OccurrenceSidebar({
   return <Tabs activeId={activeId} onChange={id => setTab(id)}>
     <Row wrap="nowrap" style={style} css={css.sideBar({ theme })}>
       <Col shrink={false} grow={false} css={css.detailDrawerBar({ theme })}>
-        <TabList aria-label="Images" style={{ paddingTop: '12px' }} vertical>
+        <TabList aria-label="Images" style={{ paddingTop: '12px', width: '2.5em' }} vertical>
           <Tab tabId="details" direction="left">
             <MdInfo />
           </Tab>
@@ -66,6 +66,8 @@ export function OccurrenceSidebar({
             <ClusterIcon />
           </Tab>}
         </TabList>
+        <div style={{flex: '1 1 auto'}}></div>
+        <ClusterIcon />
       </Col>
       <Col shrink={false} grow={false} css={css.detailDrawerContent({ theme })} >
         <TabPanel tabId='images'>

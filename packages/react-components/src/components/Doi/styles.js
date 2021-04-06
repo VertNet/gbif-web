@@ -3,7 +3,7 @@ import { css } from '@emotion/react';
 
 
 export const doi = () => css `
-font-size: 12px;
+  font-size: 80%;
   text-decoration: none;
   display: inline-block;
   >span {

@@ -45,6 +45,7 @@ export const cssFilter = ({theme}) => css`
 
 export const cssViews = ({theme}) => css`
   margin: 0 10px;
+  height: 2.5rem;
 `;
 
 export const tabList = ({theme}) => css``;

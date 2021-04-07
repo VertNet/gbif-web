@@ -44,6 +44,11 @@ const filterConf = {
     occurrenceIssue: {
       defaultKey: 'issue'
     },
+    notIssues: {
+      serializer: ({values}) => ({
+        type: 'and', predicates: values.map(x => ({ type: 'equals', key: 'notIssues', value: x }))
+      })
+    },
     geometry: {
       defaultType: 'within'
     },

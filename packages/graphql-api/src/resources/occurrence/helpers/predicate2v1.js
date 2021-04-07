@@ -6,7 +6,8 @@ module.exports = function (predicate) {
     const withRange = convertRangeType(copy);
     const withLike = convertLikePredicates(withRange);
     const notIssues = convertNotIssues(withLike);
-    const withCase = uppercaseKeys(notIssues);
+    const withNotNull = convertIsNotNull(notIssues);
+    const withCase = uppercaseKeys(withNotNull);
     return {
       err: null,
       predicate: withCase
@@ -22,6 +23,9 @@ function toEnumCase(str) {
 function uppercaseKeys(predicate) {
   if (typeof predicate.key === 'string') {
     predicate.key = toEnumCase(predicate.key);
+  }
+  if (typeof predicate.parameter === 'string') {
+    predicate.parameter = toEnumCase(predicate.parameter);
   }
   if (predicate.predicates) {
     predicate.predicates = predicate.predicates.map(uppercaseKeys);
@@ -103,6 +107,20 @@ function convertNotIssues(obj) {
           value: obj.value
         }
       }
+    }
+  }
+  return obj;
+}
+
+function convertIsNotNull(obj) {
+  if (obj.predicate) {
+    convertIsNotNull(obj.predicate);
+  } else if (obj.predicates && Array.isArray(obj.predicates)) {
+    obj.predicates = obj.predicates.map(convertIsNotNull);
+  } else if (obj.type === 'isNotNull') {
+    return {
+      type: 'isNotNull',
+      parameter: obj.key
     }
   }
   return obj;

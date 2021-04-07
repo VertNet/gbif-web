@@ -57,7 +57,7 @@ const types = [
 
 function convertRangeType(obj) {
   if (obj.predicate) {
-    convertRangeType(obj.predicate);
+    return convertRangeType(obj.predicate);
   } else if (obj.predicates && Array.isArray(obj.predicates)) {
     obj.predicates = obj.predicates.map(convertRangeType);
   } else if (obj.type === 'range') {
@@ -94,7 +94,7 @@ function convertLikePredicates(obj) {
 
 function convertNotIssues(obj) {
   if (obj.predicate) {
-    convertNotIssues(obj.predicate);
+    return convertNotIssues(obj.predicate);
   } else if (obj.predicates && Array.isArray(obj.predicates)) {
     obj.predicates = obj.predicates.map(convertNotIssues);
   } else if (obj.key === 'notIssues') {
@@ -126,7 +126,7 @@ function convertNotIssues(obj) {
 
 function convertIsNotNull(obj) {
   if (obj.predicate) {
-    convertIsNotNull(obj.predicate);
+    return convertIsNotNull(obj.predicate);
   } else if (obj.predicates && Array.isArray(obj.predicates)) {
     obj.predicates = obj.predicates.map(convertIsNotNull);
   } else if (obj.type === 'isNotNull') {

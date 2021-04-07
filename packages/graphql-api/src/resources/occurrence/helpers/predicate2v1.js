@@ -7,12 +7,23 @@ module.exports = function (predicate) {
     const withLike = convertLikePredicates(withRange);
     const notIssues = convertNotIssues(withLike);
     const withNotNull = convertIsNotNull(notIssues);
-    const withCase = uppercaseKeys(withNotNull);
+    const nestingSimplified = removeExcessiveNesting(withNotNull);
+    const withCase = uppercaseKeys(nestingSimplified);
+    
+    //check for simple known errors
+    if (hasFuzzyTypes(withCase)) return {
+      err: {
+        type: 'FUZZY_NOT_ALLOWED',
+        message: 'Free text filters are not allowed in downloads'
+      }
+    }
+
     return {
       err: null,
       predicate: withCase
     }
   } catch (err) {
+    console.log(err);
     return { err }
   }
 }
@@ -20,6 +31,7 @@ module.exports = function (predicate) {
 function toEnumCase(str) {
   return _.snakeCase(str).toUpperCase();
 }
+
 function uppercaseKeys(predicate) {
   if (typeof predicate.key === 'string') {
     predicate.key = toEnumCase(predicate.key);
@@ -124,4 +136,24 @@ function convertIsNotNull(obj) {
     }
   }
   return obj;
+}
+
+function removeExcessiveNesting(obj) {
+  if (obj.predicate) {
+    removeExcessiveNesting(obj.predicate);
+  } else if (obj.predicates && Array.isArray(obj.predicates) && obj.predicates.length === 1) {
+    return removeExcessiveNesting(obj.predicates[0]);
+  }
+  return obj;
+}
+
+function hasFuzzyTypes(obj) {
+  if (obj.predicate) {
+    return hasFuzzyTypes(obj.predicate);
+  } else if (obj.predicates && Array.isArray(obj.predicates)) {
+    return obj.predicates.find(hasFuzzyTypes);
+  } else if (obj.type === 'fuzzy') {
+    return true;
+  }
+  return false;
 }

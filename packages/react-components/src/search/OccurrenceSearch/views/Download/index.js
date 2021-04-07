@@ -31,14 +31,23 @@ function Download() {
   const fullPredicate = data?.occurrenceSearch?._downloadPredicate?.predicate;
   const err = data?.occurrenceSearch?._downloadPredicate?.err;
 
-  return <div>
-      You are about to download, to do so you will be redirected to GBIF.org. Be aware that an account is needed to download the content.
-      {err && <div>
+  const q = currentFilterContext?.filter?.must?.q;
+  const hasFreeTextSearch = q && q.length > 1;
+  
+  return <div style={{textAlign: 'center'}}>
+      {hasFreeTextSearch && <div>Free text search can be used for exploration, but do not have download support. 
+        <button onClick={e => currentFilterContext.setField('q')}>Clear free text field</button>
+      </div>}
+
+      {!hasFreeTextSearch && <div>
+        {err && <div>
           {err.message}
         </div>}
-      {fullPredicate && <>
-        <a href={`https://www.gbif.org/occurrence/download/request?predicate=${encodeURIComponent(JSON.stringify(fullPredicate))}#create`}>Download</a>
-      </>}
+        {!err && fullPredicate && <>
+          You are about to download, to do so you will be redirected to GBIF.org. Be aware that an account is needed to download the content.
+          <a href={`https://www.gbif.org/occurrence/download/request?predicate=${encodeURIComponent(JSON.stringify(fullPredicate))}#create`}>Download</a>
+        </>}
+      </div>}
     </div>
 }
 

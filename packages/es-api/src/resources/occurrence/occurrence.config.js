@@ -75,6 +75,10 @@ const config =
       "type": "keyword",
       "field": "countryCode"
     },
+    "countryCode": {
+      "type": "keyword",
+      "field": "countryCode"
+    },
     "crawlId": {
       "type": "numeric",
       "field": "crawlId",

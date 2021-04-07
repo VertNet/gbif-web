@@ -7,7 +7,8 @@ module.exports = function (predicate) {
     const withLike = convertLikePredicates(withRange);
     const notIssues = convertNotIssues(withLike);
     const withNotNull = convertIsNotNull(notIssues);
-    const nestingSimplified = removeExcessiveNesting(withNotNull);
+    const removedEmpty = removeEmpty(withNotNull);
+    const nestingSimplified = removeExcessiveNesting(removedEmpty);
     const withCase = uppercaseKeys(nestingSimplified);
     
     //check for simple known errors
@@ -145,6 +146,21 @@ function removeExcessiveNesting(obj) {
     return removeExcessiveNesting(obj.predicates[0]);
   }
   return obj;
+}
+
+function removeEmpty(obj) {
+  if (obj.predicate) {
+    removeEmpty(obj.predicate);
+  } else if (obj.predicates && Array.isArray(obj.predicates)) {
+    obj.predicates = obj.predicates.filter(x => {
+      return !isEmpty(x);
+    }).map(removeEmpty);
+  }
+  return obj;
+}
+
+function isEmpty(predicate = {}) {
+  return Array.isArray(predicate.predicates) && predicate.predicates.length === 0;
 }
 
 function hasFuzzyTypes(obj) {

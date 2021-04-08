@@ -1,8 +1,13 @@
+import { jsx } from '@emotion/react';
 import React, { useEffect, useContext, useState, useCallback } from "react";
 import { FilterContext } from '../../../../widgets/Filter/state';
 import OccurrenceContext from '../../../SearchContext';
 import { useQuery } from '../../../../dataManagement/api';
 import { filter2predicate } from '../../../../dataManagement/filterAdapter';
+import * as css from './styles';
+import ThemeContext from '../../../../style/themes/ThemeContext';
+import { MdFileDownload } from 'react-icons/md'
+import { Button } from '../../../../components';
 
 const DOWNLOAD = `
 query($predicate: Predicate){
@@ -13,6 +18,7 @@ query($predicate: Predicate){
 `;
 
 function Download() {
+  const theme = useContext(ThemeContext);
   const currentFilterContext = useContext(FilterContext);
   const { rootPredicate, predicateConfig } = useContext(OccurrenceContext);
   const { data, error, loading, load } = useQuery(DOWNLOAD, { lazyLoad: true, keepDataWhileLoading: true });
@@ -32,22 +38,46 @@ function Download() {
   const err = data?.occurrenceSearch?._downloadPredicate?.err;
 
   const q = currentFilterContext?.filter?.must?.q;
-  const hasFreeTextSearch = q && q.length > 1;
+  const hasFreeTextSearch = q && q.length > 0;
   
-  return <div style={{textAlign: 'center'}}>
-      {hasFreeTextSearch && <div>Free text search can be used for exploration, but do not have download support. 
-        <button onClick={e => currentFilterContext.setField('q')}>Clear free text field</button>
-      </div>}
+  return <div css={css.card({theme})} style={{margin: '24px auto'}}>
+      <div css={css.icon}>
+        <MdFileDownload />
+      </div>
 
-      {!hasFreeTextSearch && <div>
-        {err && <div>
-          {err.message}
-        </div>}
-        {!err && fullPredicate && <>
-          You are about to download, to do so you will be redirected to GBIF.org. Be aware that an account is needed to download the content.
-          <a href={`https://www.gbif.org/occurrence/download/request?predicate=${encodeURIComponent(JSON.stringify(fullPredicate))}#create`}>Download</a>
+      {hasFreeTextSearch && <>
+        <h4 css={css.title({theme})}>Unsupported query</h4>
+        <div css={css.description({theme})}>
+          Free text search can be used for exploration, but do not have download support.
+        </div>
+        <Button disabled={loading} onClick={e => currentFilterContext.setField('q')} appearance="primaryOutline">Remove filter</Button>
+      </>}
+
+      {!hasFreeTextSearch && <>
+        {err && <>
+          <h4 css={css.title({theme})}>Unsupported query</h4>
+          <div css={css.description({theme})}>
+            <p>The filter looks to be unsupported</p>
+            {err.message}
+          </div>
         </>}
-      </div>}
+        {!err && fullPredicate && <>
+          <h4 css={css.title({theme})}>Download</h4>
+          <div css={css.description({theme})}>
+            <p>
+              You are about to download, to do so you will be redirected to GBIF.org.
+            </p>
+            <p>
+              Be aware that an account is needed to download the content.
+            </p>
+          </div>
+          <Button 
+            as="a" 
+            href={`https://www.gbif.org/occurrence/download/request?predicate=${encodeURIComponent(JSON.stringify(fullPredicate))}#create`} 
+            disabled={loading}
+            appearance="primary">Continue</Button>
+        </>}
+      </>}
     </div>
 }
 
